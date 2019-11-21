@@ -1,12 +1,11 @@
 import React from 'react';
 import './App.css';
-import { OverlayDimension } from './components/OverlayDimension';
+import { OverlayBuilder } from './components/OverlayBuilder';
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <OverlayDimension name="Height"/>
-      <OverlayDimension name="Width"/>
+      <OverlayBuilder />
     </div>
   );
 }

@@ -16,10 +16,11 @@ const useStyles = makeStyles({
     rotate90: {
         transform: 'rotate(90deg)'
     },
-  });
+});
 
 type OverlayDimensionProps = {
     name: string;
+    onDimensionSelect(dimension: string, value: number): void;
 };
 
 export const OverlayDimension: React.FunctionComponent<OverlayDimensionProps> = (props: OverlayDimensionProps) => {
@@ -28,10 +29,12 @@ export const OverlayDimension: React.FunctionComponent<OverlayDimensionProps> = 
 
     const handleSliderChange = (_: React.ChangeEvent<{}>, newValue: number | number[]) => {
         setValue(Number(newValue));
+        props.onDimensionSelect(props.name, Number(newValue));
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(Number(event.target.value));
+        props.onDimensionSelect(props.name, Number(event.target.value));
     };
 
     const handleBlur = () => {
