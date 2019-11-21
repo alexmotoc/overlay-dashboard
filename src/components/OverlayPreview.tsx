@@ -5,20 +5,30 @@ const useStyles = makeStyles({
     overlay: {
       width: (props: OverlayPreviewProps) => props.width,
       height: (props: OverlayPreviewProps) => props.height,
-      backgroundColor: 'black'
+      backgroundColor: 'black',
+      textAlign: 'center'
+    },
+    text: {
+        display: 'block',
+        position: 'relative',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        color: 'white'
     }
 });
 
 type OverlayPreviewProps = {
     width: number;
     height: number;
+    text: string;
 };
 
 export const OverlayPreview: React.FunctionComponent<OverlayPreviewProps> = (props: OverlayPreviewProps) => {
     const classes = useStyles(props);
     
     return (
-        <div className={classes.overlay}>            
+        <div className={classes.overlay}> 
+            <span className={classes.text}>{props.text}</span>         
         </div>
     );
 }
