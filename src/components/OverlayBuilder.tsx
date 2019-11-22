@@ -9,6 +9,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     const [height, setHeight] = React.useState(0);
     const [text, setText] = React.useState('');
     const [textColor, setTextColor] = React.useState('#fff');
+    const [overlayColor, setOverlayColor] = React.useState('#000');
 
     const handleDimensionSelect = (dimension: string, value: number) => {
         if (dimension === "Width") {
@@ -26,10 +27,17 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
         setTextColor(color.hex);
     }
 
+    const handleOverlayColorChange = (color: ColorResult) => {
+        setOverlayColor(color.hex);
+    }
+
     return (
         <React.Fragment>
             <OverlayDimension name="Height" onDimensionSelect={handleDimensionSelect}/>
             <OverlayDimension name="Width" onDimensionSelect={handleDimensionSelect}/>
+            <SketchPicker 
+                color={overlayColor}
+                onChangeComplete={handleOverlayColorChange}/>
             <TextField 
                 label="Text"
                 variant="outlined"
@@ -40,6 +48,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
             <OverlayPreview 
                 width={width} 
                 height={height}
+                overlayColor={overlayColor}
                 text={text}
                 textColor={textColor} />
         </React.Fragment>
