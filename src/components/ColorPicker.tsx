@@ -5,15 +5,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PaletteIcon from '@material-ui/icons/Palette';
-import { SketchPicker, ColorResult } from 'react-color';
+import { SketchPicker, ColorResult, RGBColor } from 'react-color';
 
 type ColorPickerProps = {
     name: string;
-    colorChangeCallback(color: string): void;
+    color: RGBColor;
+    colorChangeCallback(color: RGBColor): void;
 };
 
 export const ColorPicker: React.FunctionComponent<ColorPickerProps> = (props: ColorPickerProps) => {
-    const [color, setColor] = React.useState('');
+    const [color, setColor] = React.useState(props.color);
     const [isColorPickerOpen, setIsColorPickerOpen] = React.useState(false);
 
     const handleColorPickerClick = () => {
@@ -30,8 +31,8 @@ export const ColorPicker: React.FunctionComponent<ColorPickerProps> = (props: Co
     };
 
     const handleColorChange = (color: ColorResult) => {
-        setColor(color.hex);
-        props.colorChangeCallback(color.hex);
+        setColor(color.rgb);
+        props.colorChangeCallback(color.rgb);
     };
 
     return (
