@@ -5,7 +5,7 @@ const useStyles = makeStyles({
     overlay: {
       width: (props: OverlayPreviewProps) => props.width,
       height: (props: OverlayPreviewProps) => props.height,
-      backgroundColor: 'black',
+      backgroundColor: (props: OverlayPreviewProps) => props.overlayColor,
       textAlign: 'center'
     },
     text: {
@@ -20,6 +20,7 @@ const useStyles = makeStyles({
 type OverlayPreviewProps = {
     width: number;
     height: number;
+    overlayColor: string;
     text: string;
     textColor: string;
 };
