@@ -3,20 +3,29 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import grey from '@material-ui/core/colors/grey';
 import { RGBColor } from 'react-color';
+import { streamWidth, streamHeight } from './OverlayBuilder';
+
+export const previewWidth: number = 640;
+export const previewHeight: number = 360;
 
 const useStyles = makeStyles({
     preview: {
-        width: 640,
-        height: 360,
-        backgroundColor: grey[300]
+        width: previewWidth,
+        height: previewHeight,
+        position: 'relative',
+        backgroundColor: grey[300],
+        overflow: 'hidden'
     },
     overlay: {
-      width: (props: OverlayPreviewProps) => `${props.width}%`,
-      height: (props: OverlayPreviewProps) => `${props.height}%`,
-      backgroundColor: (props: OverlayPreviewProps) => 
-        `rgba(${props.overlayColor.r}, ${props.overlayColor.g}, ${props.overlayColor.b}, ${props.overlayColor.a})`,
-      textAlign: 'center',
-      overflow: 'hidden'
+        width: (props: OverlayPreviewProps) => `${props.width}%`,
+        height: (props: OverlayPreviewProps) => `${props.height}%`,
+        position: 'absolute',
+        left: (props: OverlayPreviewProps) => props.horizontal * previewWidth / streamWidth,
+        top: (props: OverlayPreviewProps) => props.vertical * previewHeight / streamHeight,
+        backgroundColor: (props: OverlayPreviewProps) => 
+            `rgba(${props.overlayColor.r}, ${props.overlayColor.g}, ${props.overlayColor.b}, ${props.overlayColor.a})`,
+        textAlign: 'center',
+        overflow: 'hidden'
     },
     text: {
         display: 'block',
@@ -32,6 +41,8 @@ const useStyles = makeStyles({
 type OverlayPreviewProps = {
     width: number;
     height: number;
+    horizontal: number;
+    vertical: number;
     overlayColor: RGBColor;
     text: string;
     textColor: RGBColor;

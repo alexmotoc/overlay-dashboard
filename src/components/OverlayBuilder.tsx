@@ -2,10 +2,13 @@ import * as React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { ColorPicker } from './ColorPicker';
-import { OverlayDimension } from './OverlayDimension';
-import { OverlayPreview } from './OverlayPreview';
+import { OverlaySlider } from './OverlaySlider';
+import { OverlayPreview, previewWidth, previewHeight } from './OverlayPreview';
 import { RGBColor } from 'react-color';
 import { Typography } from '@material-ui/core';
+
+export const streamWidth: number = 1920;
+export const streamHeight: number = 1080;
 
 export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     const white: RGBColor = {r: 255, g: 255, b: 255, a: 1.0};
@@ -13,15 +16,26 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     
     const [width, setWidth] = React.useState(0);
     const [height, setHeight] = React.useState(0);
+    const [horizontal, setHorizontal] = React.useState(0);
+    const [vertical, setVertical] = React.useState(0);
     const [text, setText] = React.useState('');
     const [textColor, setTextColor] = React.useState(white);
     const [overlayColor, setOverlayColor] = React.useState(black);
 
-    const handleDimensionSelect = (dimension: string, value: number) => {
-        if (dimension === "Width") {
-            setWidth(value);
-        } else {
-            setHeight(value);
+    const handleValueChange = (attribute: string, value: number) => {
+        switch (attribute.toLowerCase()) {
+            case 'width':
+                setWidth(value);
+                break;
+            case 'height':
+                setHeight(value);
+                break;
+            case 'horizontal':
+                setHorizontal(value);
+                break;
+            case 'vertical':
+                setVertical(value);
+                break;
         }
     };
 
@@ -36,13 +50,38 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     <Typography variant='h5'>
                         Size
                     </Typography>
-                    <OverlayDimension name='Height' onDimensionSelect={handleDimensionSelect}/>
-                    <OverlayDimension name='Width' onDimensionSelect={handleDimensionSelect}/>
+                    <OverlaySlider 
+                        type='size' 
+                        name='Height' 
+                        min={0}
+                        max={100}
+                        onValueChange={handleValueChange}/>
+                    <OverlaySlider 
+                        type='size' 
+                        name='Width' 
+                        min={0}
+                        max={100}
+                        onValueChange={handleValueChange}/>
+                    <Typography variant='h5'>
+                        Position
+                    </Typography> 
+                    <OverlaySlider 
+                        type='position' 
+                        name='Horizontal' 
+                        min={0}
+                        max={streamWidth}
+                        onValueChange={handleValueChange}/>
+                    <OverlaySlider 
+                        type='position' 
+                        name='Vertical' 
+                        min={0}
+                        max={streamHeight}
+                        onValueChange={handleValueChange}/>
                     <ColorPicker
                         name='Overlay'
                         color={overlayColor}
                         colorChangeCallback={setOverlayColor}>
-                    </ColorPicker>                  
+                    </ColorPicker>                        
                     <Typography variant='h5'>
                         Text
                     </Typography>
@@ -60,6 +99,8 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     <OverlayPreview 
                         width={width} 
                         height={height}
+                        horizontal={horizontal}
+                        vertical={vertical}
                         overlayColor={overlayColor}
                         text={text}
                         textColor={textColor} />
