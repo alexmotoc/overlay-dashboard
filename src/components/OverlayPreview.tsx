@@ -5,8 +5,8 @@ import grey from '@material-ui/core/colors/grey';
 
 const useStyles = makeStyles({
     preview: {
-        width: '75%',
-        height: '30%',
+        width: 640,
+        height: 360,
         backgroundColor: grey[300]
     },
     overlay: {
@@ -35,7 +35,7 @@ type OverlayPreviewProps = {
 
 export const OverlayPreview: React.FunctionComponent<OverlayPreviewProps> = (props: OverlayPreviewProps) => {
     const classes = useStyles(props);
-    
+
     return (
         <React.Fragment>
             <Typography variant='h3'>
