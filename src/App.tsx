@@ -29,7 +29,7 @@ const theme = createMuiTheme({
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
+      <div>
         <OverlayBuilder />
       </div>      
     </ThemeProvider>

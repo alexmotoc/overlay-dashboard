@@ -1,8 +1,10 @@
 import * as React from 'react';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 import { OverlayDimension } from './OverlayDimension';
 import { OverlayPreview } from './OverlayPreview';
 import { SketchPicker, ColorResult } from 'react-color';
+import { Typography } from '@material-ui/core';
 
 export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     const [width, setWidth] = React.useState(0);
@@ -33,24 +35,36 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
 
     return (
         <React.Fragment>
-            <OverlayDimension name="Height" onDimensionSelect={handleDimensionSelect}/>
-            <OverlayDimension name="Width" onDimensionSelect={handleDimensionSelect}/>
-            <SketchPicker 
-                color={overlayColor}
-                onChangeComplete={handleOverlayColorChange}/>
-            <TextField 
-                label="Text"
-                variant="outlined"
-                onChange={handleTextChange} />
-            <SketchPicker 
-                color={textColor}
-                onChangeComplete={handleTextColorChange}/>
-            <OverlayPreview 
-                width={width} 
-                height={height}
-                overlayColor={overlayColor}
-                text={text}
-                textColor={textColor} />
+            <Grid container spacing={2}>
+                <Grid item xs>
+                    <Typography variant='h5'>
+                        Size
+                    </Typography>
+                    <OverlayDimension name='Height' onDimensionSelect={handleDimensionSelect}/>
+                    <OverlayDimension name='Width' onDimensionSelect={handleDimensionSelect}/>
+                    <SketchPicker 
+                        color={overlayColor}
+                        onChangeComplete={handleOverlayColorChange}/>
+                    <Typography variant='h5'>
+                        Text
+                    </Typography>
+                    <TextField 
+                        disabled={width === 0 || height === 0}
+                        variant='outlined'
+                        onChange={handleTextChange} />
+                    <SketchPicker 
+                        color={textColor}
+                        onChangeComplete={handleTextColorChange}/>
+                </Grid>
+                <Grid item xs>
+                    <OverlayPreview 
+                        width={width} 
+                        height={height}
+                        overlayColor={overlayColor}
+                        text={text}
+                        textColor={textColor} />
+                </Grid>
+            </Grid>
         </React.Fragment>
     );
 }
