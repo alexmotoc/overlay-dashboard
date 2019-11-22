@@ -13,8 +13,8 @@ const useStyles = makeStyles({
     overlay: {
       width: (props: OverlayPreviewProps) => `${props.width}%`,
       height: (props: OverlayPreviewProps) => `${props.height}%`,
-      backgroundColor: (props: OverlayPreviewProps) => `rgb(${props.overlayColor.r}, ${props.overlayColor.g}, ${props.overlayColor.b})`,
-      opacity: (props: OverlayPreviewProps) => props.overlayColor.a,
+      backgroundColor: (props: OverlayPreviewProps) => 
+        `rgba(${props.overlayColor.r}, ${props.overlayColor.g}, ${props.overlayColor.b}, ${props.overlayColor.a})`,
       textAlign: 'center',
       overflow: 'hidden'
     },
@@ -23,7 +23,8 @@ const useStyles = makeStyles({
         position: 'relative',
         top: '50%',
         transform: 'translateY(-50%)',
-        color: (props: OverlayPreviewProps) => `rgb(${props.textColor.r}, ${props.textColor.g}, ${props.textColor.b})`,
+        color: (props: OverlayPreviewProps) => 
+            `rgba(${props.textColor.r}, ${props.textColor.g}, ${props.textColor.b}, ${props.textColor.a})`,
         opacity: (props: OverlayPreviewProps) => props.textColor.a
     }
 });
