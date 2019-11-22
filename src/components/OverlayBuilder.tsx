@@ -4,12 +4,12 @@ import Grid from '@material-ui/core/Grid';
 import { ColorPicker } from './ColorPicker';
 import { OverlayDimension } from './OverlayDimension';
 import { OverlayPreview } from './OverlayPreview';
-import { ColorResult } from 'react-color';
+import { RGBColor } from 'react-color';
 import { Typography } from '@material-ui/core';
 
 export const OverlayBuilder: React.FunctionComponent<{}> = () => {
-    const white: string = '#fff';
-    const black: string = '#000';
+    const white: RGBColor = {r: 255, g: 255, b: 255, a: 1.0};
+    const black: RGBColor = {r: 0, g: 0, b: 0, a: 1.0};
     
     const [width, setWidth] = React.useState(0);
     const [height, setHeight] = React.useState(0);
@@ -40,6 +40,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     <OverlayDimension name='Width' onDimensionSelect={handleDimensionSelect}/>
                     <ColorPicker
                         name='Overlay'
+                        color={overlayColor}
                         colorChangeCallback={setOverlayColor}>
                     </ColorPicker>                  
                     <Typography variant='h5'>
@@ -51,6 +52,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                         onChange={handleTextChange} />
                     <ColorPicker
                         name='Text'
+                        color={textColor}
                         colorChangeCallback={setTextColor}>
                     </ColorPicker> 
                 </Grid>

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import grey from '@material-ui/core/colors/grey';
+import { RGBColor } from 'react-color';
 
 const useStyles = makeStyles({
     preview: {
@@ -12,7 +13,8 @@ const useStyles = makeStyles({
     overlay: {
       width: (props: OverlayPreviewProps) => `${props.width}%`,
       height: (props: OverlayPreviewProps) => `${props.height}%`,
-      backgroundColor: (props: OverlayPreviewProps) => props.overlayColor,
+      backgroundColor: (props: OverlayPreviewProps) => `rgb(${props.overlayColor.r}, ${props.overlayColor.g}, ${props.overlayColor.b})`,
+      opacity: (props: OverlayPreviewProps) => props.overlayColor.a,
       textAlign: 'center',
       overflow: 'hidden'
     },
@@ -21,16 +23,17 @@ const useStyles = makeStyles({
         position: 'relative',
         top: '50%',
         transform: 'translateY(-50%)',
-        color: (props: OverlayPreviewProps) => props.textColor
+        color: (props: OverlayPreviewProps) => `rgb(${props.textColor.r}, ${props.textColor.g}, ${props.textColor.b})`,
+        opacity: (props: OverlayPreviewProps) => props.textColor.a
     }
 });
 
 type OverlayPreviewProps = {
     width: number;
     height: number;
-    overlayColor: string;
+    overlayColor: RGBColor;
     text: string;
-    textColor: string;
+    textColor: RGBColor;
 };
 
 export const OverlayPreview: React.FunctionComponent<OverlayPreviewProps> = (props: OverlayPreviewProps) => {
