@@ -13,7 +13,7 @@ const useStyles = makeStyles({
         position: 'relative',
         top: '50%',
         transform: 'translateY(-50%)',
-        color: 'white'
+        color: (props: OverlayPreviewProps) => props.textColor
     }
 });
 
@@ -21,6 +21,7 @@ type OverlayPreviewProps = {
     width: number;
     height: number;
     text: string;
+    textColor: string;
 };
 
 export const OverlayPreview: React.FunctionComponent<OverlayPreviewProps> = (props: OverlayPreviewProps) => {
