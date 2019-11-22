@@ -19,8 +19,11 @@ const theme = createMuiTheme({
       main: deepOrange[300],
       dark: deepOrange[500],
       contrastText: '#000',
-    },
+    }
   },
+  typography: {
+    fontFamily: 'Raleway'
+  }
 });
 
 const App: React.FC = () => {
