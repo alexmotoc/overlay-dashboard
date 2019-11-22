@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import HeightIcon from '@material-ui/icons/Height';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 const useStyles = makeStyles({
     root: {
@@ -18,23 +19,26 @@ const useStyles = makeStyles({
     },
 });
 
-type OverlayDimensionProps = {
+type OverlaySliderProps = {
+    type: string;
     name: string;
-    onDimensionSelect(dimension: string, value: number): void;
+    min: number;
+    max: number;
+    onValueChange(attribute: string, value: number): void;
 };
 
-export const OverlayDimension: React.FunctionComponent<OverlayDimensionProps> = (props: OverlayDimensionProps) => {
+export const OverlaySlider: React.FunctionComponent<OverlaySliderProps> = (props: OverlaySliderProps) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
     const handleSliderChange = (_: React.ChangeEvent<{}>, newValue: number | number[]) => {
         setValue(Number(newValue));
-        props.onDimensionSelect(props.name, Number(newValue));
+        props.onValueChange(props.name, Number(newValue));
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(Number(event.target.value));
-        props.onDimensionSelect(props.name, Number(event.target.value));
+        props.onValueChange(props.name, Number(event.target.value));
     };
 
     const handleBlur = () => {
@@ -48,23 +52,26 @@ export const OverlayDimension: React.FunctionComponent<OverlayDimensionProps> = 
     return (
         <div className={classes.root}>
             <Typography id="input-slider" gutterBottom>
-            {props.name} (%)
+            {props.name} {props.type === 'size' ? '(%)' : '(px)'} 
             </Typography>
             <Grid container spacing={2} alignItems="center">
                 <Grid item>
-                    {props.name === 'Height' ? (
-                        <HeightIcon />
+                    {props.type === 'size' ? (
+                        props.name === 'Height' ? (
+                            <HeightIcon />
+                        ) : (
+                            <HeightIcon className={classes.rotate90} />
+                        )
                     ) : (
-                        <HeightIcon className={classes.rotate90} />
-                    )
-                    }
+                        <LocationOnIcon />
+                    )}
                 </Grid>
                 <Grid item xs>
                     <Slider
                         value={value}
                         onChange={handleSliderChange}
-                        min={0}
-                        max={100}
+                        min={props.min}
+                        max={props.max}
                         aria-labelledby="input-slider"
                     />
                 </Grid>
@@ -77,8 +84,8 @@ export const OverlayDimension: React.FunctionComponent<OverlayDimensionProps> = 
                         onBlur={handleBlur}
                         inputProps={{
                         step: 5,
-                        min: 0,
-                        max: 100,
+                        min: props.min,
+                        max: props.max,
                         type: 'number',
                         'aria-labelledby': 'input-slider',
                         }}
