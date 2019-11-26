@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
+import { DashboardDrawer } from './components/DashboardDrawer';
 import { OverlayBuilder } from './components/OverlayBuilder';
-import { ThemeProvider } from '@material-ui/styles';
+import { ThemeProvider, makeStyles } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import cyan from '@material-ui/core/colors/cyan';
 import deepOrange from '@material-ui/core/colors/deepOrange';
@@ -26,12 +27,26 @@ const theme = createMuiTheme({
   }
 });
 
+const useStyles = makeStyles({
+  root: {
+      display: 'flex',
+  },
+  content: {
+      flexGrow: 1
+  }
+});
+
 const App: React.FC = () => {
+  const classes = useStyles();
+
   return (
     <ThemeProvider theme={theme}>
-      <div>
-        <OverlayBuilder />
-      </div>      
+      <div className={classes.root}>
+        <DashboardDrawer/>
+        <main className={classes.content}>
+          <OverlayBuilder />
+        </main>
+      </div>     
     </ThemeProvider>
   );
 }
