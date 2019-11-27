@@ -3,22 +3,26 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { ColorPicker } from './ColorPicker';
 import { OverlaySlider } from './OverlaySlider';
-import { OverlayPreview, previewWidth, previewHeight } from './OverlayPreview';
+import { OverlayPreview } from './OverlayPreview';
+import { TextStyle, TextFormats } from './TextStyle';
 import { RGBColor } from 'react-color';
 import { Typography } from '@material-ui/core';
+import { TextAlignment } from './TextStyle';
 
 export const streamWidth: number = 1920;
 export const streamHeight: number = 1080;
 
-export const OverlayBuilder: React.FunctionComponent<{}> = () => {
-    const white: RGBColor = {r: 255, g: 255, b: 255, a: 1.0};
-    const black: RGBColor = {r: 0, g: 0, b: 0, a: 1.0};
-    
+export const white: RGBColor = {r: 255, g: 255, b: 255, a: 1.0};
+export const black: RGBColor = {r: 0, g: 0, b: 0, a: 1.0};
+
+export const OverlayBuilder: React.FunctionComponent<{}> = () => {   
     const [width, setWidth] = React.useState(0);
     const [height, setHeight] = React.useState(0);
     const [horizontal, setHorizontal] = React.useState(0);
     const [vertical, setVertical] = React.useState(0);
     const [text, setText] = React.useState('');
+    const [textAlignment, setTextAlignment] = React.useState('center' as TextAlignment);
+    const [textFormats, setTextFormats] = React.useState(['' as TextFormats]);
     const [textColor, setTextColor] = React.useState(white);
     const [overlayColor, setOverlayColor] = React.useState(black);
 
@@ -88,12 +92,11 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     <TextField 
                         disabled={width === 0 || height === 0}
                         variant='outlined'
-                        onChange={handleTextChange} />
-                    <ColorPicker
-                        name='Text'
-                        color={textColor}
-                        colorChangeCallback={setTextColor}>
-                    </ColorPicker> 
+                        onChange={handleTextChange} /> 
+                    <TextStyle
+                        textAlignmentCallback={setTextAlignment}
+                        textColorCallback={setTextColor}
+                        textFormatsCallback={setTextFormats}/>
                 </Grid>
                 <Grid item xs>
                     <OverlayPreview 
@@ -103,7 +106,9 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                         vertical={vertical}
                         overlayColor={overlayColor}
                         text={text}
-                        textColor={textColor} />
+                        textAlignment={textAlignment}
+                        textColor={textColor}
+                        textFormats={textFormats} />
                 </Grid>
             </Grid>
         </React.Fragment>

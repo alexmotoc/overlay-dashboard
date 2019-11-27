@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import grey from '@material-ui/core/colors/grey';
 import { RGBColor } from 'react-color';
 import { streamWidth, streamHeight } from './OverlayBuilder';
+import { TextAlignment, TextFormats } from './TextStyle';
 
 export const previewWidth: number = 640;
 export const previewHeight: number = 360;
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
         top: (props: OverlayPreviewProps) => props.vertical * previewHeight / streamHeight,
         backgroundColor: (props: OverlayPreviewProps) => 
             `rgba(${props.overlayColor.r}, ${props.overlayColor.g}, ${props.overlayColor.b}, ${props.overlayColor.a})`,
-        textAlign: 'center',
+        textAlign: (props: OverlayPreviewProps) => props.textAlignment,
         overflow: 'hidden'
     },
     text: {
@@ -45,7 +46,9 @@ type OverlayPreviewProps = {
     vertical: number;
     overlayColor: RGBColor;
     text: string;
+    textAlignment: TextAlignment;
     textColor: RGBColor;
+    textFormats: TextFormats[];
 };
 
 export const OverlayPreview: React.FunctionComponent<OverlayPreviewProps> = (props: OverlayPreviewProps) => {
