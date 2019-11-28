@@ -51,6 +51,7 @@ export type TextAlignment = 'left' | 'center' | 'right';
 export type TextFormats = 'bold' | 'italic' | 'underlined';
 
 type TextStyleProps = {
+    className: string;
     textAlignmentCallback(alignment: TextAlignment): void;
     textColorCallback(color: RGBColor): void;
     textFormatsCallback(formats: TextFormats[]): void;
@@ -79,7 +80,7 @@ export const TextStyle: React.FunctionComponent<TextStyleProps> = (props: TextSt
     const classes = useStyles();
 
     return (
-        <div className={classes.container}>
+        <div className={`${classes.container} ${props.className}`}>
             <Paper elevation={0} className={classes.paper}>
                 <StyledToggleButtonGroup
                 size="small"
