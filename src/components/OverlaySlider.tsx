@@ -8,11 +8,8 @@ import HeightIcon from '@material-ui/icons/Height';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 const useStyles = makeStyles({
-    root: {
-      width: 250,
-    },
     input: {
-      width: 42,
+      width: 50,
     },
     rotate90: {
         transform: 'rotate(90deg)'
@@ -20,6 +17,7 @@ const useStyles = makeStyles({
 });
 
 type OverlaySliderProps = {
+    className: string;
     type: string;
     name: string;
     min: number;
@@ -50,7 +48,7 @@ export const OverlaySlider: React.FunctionComponent<OverlaySliderProps> = (props
     };
 
     return (
-        <div className={classes.root}>
+        <div className={props.className}>
             <Typography id="input-slider" gutterBottom>
             {props.name} {props.type === 'size' ? '(%)' : '(px)'} 
             </Typography>

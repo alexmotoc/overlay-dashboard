@@ -11,8 +11,10 @@ export const previewHeight: number = 360;
 
 const useStyles = makeStyles({
     preview: {
+        display: 'inline-block',
         width: previewWidth,
         height: previewHeight,
+        marginTop: 50,
         position: 'relative',
         backgroundColor: grey[300],
         overflow: 'hidden'
@@ -58,7 +60,7 @@ export const OverlayPreview: React.FunctionComponent<OverlayPreviewProps> = (pro
 
     return (
         <React.Fragment>
-            <Typography variant='h3'>
+            <Typography variant='h3' align='center'>
                 Overlay Preview
             </Typography>
             <div className={classes.preview}>

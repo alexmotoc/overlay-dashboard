@@ -16,11 +16,12 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.up('sm')]: {
               width: 240,
               flexShrink: 0,
-            },
+            },        
           },
         drawerPaper: {
             width: drawerWidth,
-        },
+            backgroundColor: theme.palette.primary.main
+        }
     })
 );
 
