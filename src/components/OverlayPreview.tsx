@@ -35,7 +35,9 @@ const useStyles = makeStyles({
         transform: 'translateY(-50%)',
         color: (props: OverlayPreviewProps) => 
             `rgba(${props.textColor.r}, ${props.textColor.g}, ${props.textColor.b}, ${props.textColor.a})`,
-        opacity: (props: OverlayPreviewProps) => props.textColor.a
+        fontWeight: (props: OverlayPreviewProps) => props.textFormats.includes('bold') ? 'bold' : 'normal',
+        fontStyle: (props: OverlayPreviewProps) => props.textFormats.includes('italic') ? 'italic': 'normal',
+        textDecoration: (props: OverlayPreviewProps) => props.textFormats.includes('underlined') ? 'underline' : 'none'
     }
 });
 
