@@ -1,11 +1,17 @@
 import * as React from 'react';
 import axios from 'axios';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import red from '@material-ui/core/colors/red';
 import { makeStyles } from '@material-ui/core/styles';
 import { ColorPicker } from './ColorPicker';
 import { OverlaySlider } from './OverlaySlider';
@@ -53,12 +59,29 @@ const useStyles = makeStyles({
     },
     saveButton: {
         marginTop: 15
+    },
+    overlayName: {
+        fontSize: '3em'
+    },
+    overlayTabs: {
+        display: 'flex',
+        flexDirection: 'row',
+        maxWidth: 500
+    },
+    overlayNameContainer: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    deleteItem: {
+        marginRight: 10,
+        color: red[500]
     }
 });
 
 export const OverlayBuilder: React.FunctionComponent<{}> = () => {   
     const classes = useStyles();
 
+    const [overlayName, setOverlayName] = React.useState('Overlay');
     const [width, setWidth] = React.useState(0);
     const [height, setHeight] = React.useState(0);
     const [horizontal, setHorizontal] = React.useState(0);
@@ -69,6 +92,22 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     const [textColor, setTextColor] = React.useState(white);
     const [overlayColor, setOverlayColor] = React.useState(black);
     const [isToastOpen, setIsToastOpen] = React.useState(false);
+    const [overlays, setOverlays] = React.useState(['Overlay']);
+    const [value, setValue] = React.useState(0);
+
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setValue(newValue);
+        setOverlayName(overlays[newValue]);
+    };
+
+    const handleAddOverlay = () => {
+        setOverlays(overlays.concat('Overlay' + overlays.length));
+    };
+
+    const handleDeleteOverlay = () => {
+        setOverlays(overlays.slice(0, value).concat(overlays.slice(value + 1)));
+        setValue(0);
+    };
 
     const handleValueChange = (attribute: string, value: number) => {
         switch (attribute.toLowerCase()) {
@@ -89,6 +128,11 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
 
     const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setText(event.target.value);
+    };
+
+    const handleOverlayNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setOverlayName(event.target.value);
+        overlays[value] = event.target.value;
     };
 
     const handleSaveOverlay = () => {
@@ -124,6 +168,37 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
             <Grid container spacing={2}>
                 <Grid item xs className={classes.form}>
                     <div className={classes.formDisplay}>
+                        <div className={classes.overlayTabs}>
+                            <Tabs
+                                value={value}
+                                onChange={handleChange}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                variant="scrollable"
+                                scrollButtons="off"
+                                >
+                                {overlays.map((text, index) => (
+                                    <Tab label={text} />
+                                ))}
+                            </Tabs>
+                            <IconButton aria-label="add" color="primary" onClick={handleAddOverlay}>
+                                <AddIcon />
+                            </IconButton>
+                        </div>
+                        <div className={`${classes.element} ${classes.overlayNameContainer}`}>
+                            {overlays.length > 1 && <IconButton className={classes.deleteItem} aria-label="delete" onClick={handleDeleteOverlay}>
+                                <DeleteIcon />
+                            </IconButton>}
+                            <TextField 
+                                value={overlays[value]}
+                                InputProps={{
+                                    disableUnderline: true,
+                                    classes: {
+                                    input: classes.overlayName,
+                                    },
+                                }}
+                                onChange={handleOverlayNameChange}/>
+                        </div>
                         <Typography variant='h5' className={classes.headerText}>
                             Size
                         </Typography>
@@ -202,7 +277,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
             </Grid>
             <Snackbar open={isToastOpen} autoHideDuration={1500} onClose={handleCloseToast}>
                 <Alert onClose={handleCloseToast} severity="success">
-                Overlay was saved successfully!!
+                Overlay was saved successfully!
                 </Alert>
             </Snackbar>
         </React.Fragment>
