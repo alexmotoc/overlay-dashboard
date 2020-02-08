@@ -143,7 +143,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                                 scrollButtons="off"
                                 >
                                 {overlays.map((overlay, idx) => (
-                                    <Tab label={overlay.name} />
+                                    <Tab key={idx} label={overlay.name} />
                                 ))}
                             </Tabs>
                             <IconButton aria-label="add" color="primary" onClick={handleAddOverlay}>
@@ -154,6 +154,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     {overlays.map((overlay, idx) => (
                         idx === index &&
                         <OverlayAttributes
+                            key={idx}
                             overlay={overlay}
                             onChange={handleOverlayAttributeChange}
                             onDeleteOverlay={handleDeleteOverlay}
@@ -174,7 +175,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     </Typography>
                     <div className={classes.preview}>
                         {overlays.map((overlay, idx) => (
-                            <OverlayPreview {...overlay} />
+                            <OverlayPreview key={idx} {...overlay} />
                         ))}
                     </div>
                 </Grid>
