@@ -6,6 +6,11 @@ import { ThemeProvider, makeStyles } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import cyan from '@material-ui/core/colors/cyan';
 import deepOrange from '@material-ui/core/colors/deepOrange';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -41,14 +46,20 @@ const App: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <DashboardDrawer/>
-        <main className={classes.content}>
-          <OverlayBuilder />
-        </main>
-      </div>     
-    </ThemeProvider>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <div className={classes.root}>
+          <DashboardDrawer/>
+          <Switch>
+            <Route path='/overlay-builder'>
+              <main className={classes.content}>
+                <OverlayBuilder />
+              </main>
+            </Route>
+          </Switch>
+        </div>     
+      </ThemeProvider>
+    </Router>
   );
 }
 

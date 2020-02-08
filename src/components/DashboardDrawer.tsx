@@ -10,6 +10,15 @@ import {createStyles, makeStyles } from '@material-ui/styles';
 
 const drawerWidth: number = 240;
 
+type Option = {
+    name: string;
+    link: string;
+};
+
+const options: Option[] = [
+    {'name': 'Overlay Builder', 'link': '/overlay-builder'}
+];
+
 const useStyles = makeStyles((theme: Theme) => 
     createStyles({
         drawer: {
@@ -30,10 +39,10 @@ export const DashboardDrawer: React.FunctionComponent<{}> = () => {
 
     const drawer: React.ReactFragment= (
         <List>
-            {['Overlay Builder'].map((text, index) => (
-            <ListItem button key={text}>
+            {options.map((option, index) => (
+            <ListItem button component='a' key={option.name} href={option.link}>
                 <ListItemIcon><BuildIcon/></ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={option.name} />
             </ListItem>
             ))}
         </List>
