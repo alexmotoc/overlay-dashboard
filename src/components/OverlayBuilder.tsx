@@ -1,31 +1,25 @@
 import * as React from 'react';
 import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Fab from '@material-ui/core/Fab';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import grey from '@material-ui/core/colors/grey';
 import red from '@material-ui/core/colors/red';
 import { makeStyles } from '@material-ui/core/styles';
-import { ColorPicker } from './ColorPicker';
-import { OverlaySlider } from './OverlaySlider';
 import { OverlayPreview } from './OverlayPreview';
-import { TextStyle, TextFormats } from './TextStyle';
-import { RGBColor } from 'react-color';
-import { Typography } from '@material-ui/core';
-import { TextAlignment } from './TextStyle';
+import { defaultOverlay, Overlay, OverlayAttributes } from './OverlayAttributes';
+import { previewWidth, previewHeight } from './OverlayPreview';
 
 export const streamWidth: number = 1920;
 export const streamHeight: number = 1080;
-
-export const white: RGBColor = {r: 255, g: 255, b: 255, a: 1.0};
-export const black: RGBColor = {r: 0, g: 0, b: 0, a: 1.0};
 
 const Alert = (props: AlertProps) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -58,6 +52,11 @@ const useStyles = makeStyles({
         marginRight: 10,
     },
     saveButton: {
+        marginLeft: 20
+    },
+    saveContainer: {
+        display: 'flex',
+        alignItems: 'center',
         marginTop: 15
     },
     overlayName: {
@@ -75,86 +74,52 @@ const useStyles = makeStyles({
     deleteItem: {
         marginRight: 10,
         color: red[500]
-    }
+    },
+    preview: {
+        display: 'inline-block',
+        width: previewWidth,
+        height: previewHeight,
+        marginTop: 50,
+        position: 'relative',
+        backgroundColor: grey[300],
+        overflow: 'hidden'
+    },
 });
 
 export const OverlayBuilder: React.FunctionComponent<{}> = () => {   
     const classes = useStyles();
 
-    const [overlayName, setOverlayName] = React.useState('Overlay');
-    const [width, setWidth] = React.useState(0);
-    const [height, setHeight] = React.useState(0);
-    const [horizontal, setHorizontal] = React.useState(0);
-    const [vertical, setVertical] = React.useState(0);
-    const [text, setText] = React.useState('');
-    const [textAlignment, setTextAlignment] = React.useState('center' as TextAlignment);
-    const [textFormats, setTextFormats] = React.useState(['' as TextFormats]);
-    const [textColor, setTextColor] = React.useState(white);
-    const [overlayColor, setOverlayColor] = React.useState(black);
-    const [isToastOpen, setIsToastOpen] = React.useState(false);
-    const [overlays, setOverlays] = React.useState(['Overlay']);
-    const [value, setValue] = React.useState(0);
+    const [isToastOpen, setIsToastOpen] = React.useState<boolean>(false);
+    const [overlays, setOverlays] = React.useState<Overlay[]>([defaultOverlay]);
+    const [index, setIndex] = React.useState<number>(0);
+    const [templateName, setTemplateName] = React.useState<string>('');
 
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
-        setOverlayName(overlays[newValue]);
+    const handleIndexChange = (_: React.ChangeEvent<{}>, newIndex: number) => {
+        setIndex(newIndex);
     };
 
     const handleAddOverlay = () => {
-        setOverlays(overlays.concat('Overlay' + overlays.length));
+        let newOverlay: Overlay = {...defaultOverlay};
+        newOverlay.name = 'Overlay' + overlays.length;
+        setOverlays(overlays.concat(newOverlay));
     };
 
     const handleDeleteOverlay = () => {
-        setOverlays(overlays.slice(0, value).concat(overlays.slice(value + 1)));
-        setValue(0);
+        setOverlays(overlays.slice(0, index).concat(overlays.slice(index + 1)));
+        setIndex(0);
     };
 
-    const handleValueChange = (attribute: string, value: number) => {
-        switch (attribute.toLowerCase()) {
-            case 'width':
-                setWidth(value);
-                break;
-            case 'height':
-                setHeight(value);
-                break;
-            case 'horizontal':
-                setHorizontal(value);
-                break;
-            case 'vertical':
-                setVertical(value);
-                break;
-        }
+    const handleOverlayAttributeChange = (overlay: Overlay) => {
+        overlays[index] = overlay;
+        setOverlays([...overlays]);
     };
 
-    const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setText(event.target.value);
-    };
-
-    const handleOverlayNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setOverlayName(event.target.value);
-        overlays[value] = event.target.value;
+    const handleTemplateNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTemplateName(event.target.value);
     };
 
     const handleSaveOverlay = () => {
-        const data = {
-            'size': {
-                'width': width,
-                'height': height
-            },
-            'position': {
-                'horizontal': horizontal,
-                'vertical': vertical
-            },
-            'text': {
-                'content': text,
-                'alignment': textAlignment,
-                'format': textFormats,
-                'colour': textColor
-            },
-            'colour': overlayColor
-        }
-
-        axios.post('http://127.0.0.1:8000/overlays/', {'template': JSON.stringify(data)}).then(response => {
+        axios.post('http://127.0.0.1:8000/overlays/', {'name': templateName, 'template': JSON.stringify(overlays)}).then(response => {
             setIsToastOpen(true);
         });
     }
@@ -170,109 +135,48 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     <div className={classes.formDisplay}>
                         <div className={classes.overlayTabs}>
                             <Tabs
-                                value={value}
-                                onChange={handleChange}
+                                value={index}
+                                onChange={handleIndexChange}
                                 indicatorColor="primary"
                                 textColor="primary"
                                 variant="scrollable"
                                 scrollButtons="off"
                                 >
-                                {overlays.map((text, index) => (
-                                    <Tab label={text} />
+                                {overlays.map((overlay, idx) => (
+                                    <Tab label={overlay.name} />
                                 ))}
                             </Tabs>
                             <IconButton aria-label="add" color="primary" onClick={handleAddOverlay}>
                                 <AddIcon />
                             </IconButton>
                         </div>
-                        <div className={`${classes.element} ${classes.overlayNameContainer}`}>
-                            {overlays.length > 1 && <IconButton className={classes.deleteItem} aria-label="delete" onClick={handleDeleteOverlay}>
-                                <DeleteIcon />
-                            </IconButton>}
-                            <TextField 
-                                value={overlays[value]}
-                                InputProps={{
-                                    disableUnderline: true,
-                                    classes: {
-                                    input: classes.overlayName,
-                                    },
-                                }}
-                                onChange={handleOverlayNameChange}/>
-                        </div>
-                        <Typography variant='h5' className={classes.headerText}>
-                            Size
-                        </Typography>
-                        <OverlaySlider 
-                            className={classes.element}
-                            type='size' 
-                            name='Height' 
-                            min={0}
-                            max={100}
-                            onValueChange={handleValueChange}/>
-                        <OverlaySlider 
-                            className={classes.element}
-                            type='size' 
-                            name='Width' 
-                            min={0}
-                            max={100}
-                            onValueChange={handleValueChange}/>
-                        <Typography variant='h5' className={classes.headerText}>
-                            Position
-                        </Typography> 
-                        <OverlaySlider 
-                            className={classes.element}
-                            type='position' 
-                            name='Horizontal' 
-                            min={0}
-                            max={streamWidth}
-                            onValueChange={handleValueChange}/>
-                        <OverlaySlider 
-                            className={classes.element}
-                            type='position' 
-                            name='Vertical' 
-                            min={0}
-                            max={streamHeight}
-                            onValueChange={handleValueChange}/>
-                        <div>
-                            <Typography variant='h5' className={classes.headerText}>
-                                Colour
-                            </Typography> 
-                            <ColorPicker
-                                name='Overlay'
-                                color={overlayColor}
-                                colorChangeCallback={setOverlayColor}>
-                            </ColorPicker> 
-                        </div>                       
-                        <Typography variant='h5' className={classes.headerText}>
-                            Text
-                        </Typography>
-                        <TextField 
-                            className={classes.element}
-                            disabled={width === 0 || height === 0}
-                            variant='outlined'
-                            onChange={handleTextChange} /> 
-                        <TextStyle
-                            className={`${classes.element} ${classes.textStyle}`}
-                            textAlignmentCallback={setTextAlignment}
-                            textColorCallback={setTextColor}
-                            textFormatsCallback={setTextFormats}/>
                     </div>
-                    <Fab className={classes.saveButton} color="primary" variant="extended" onClick={handleSaveOverlay}>
-                        <SaveIcon className={classes.extendedIcon}/>
-                        Save
-                    </Fab>
+                    {overlays.map((overlay, idx) => (
+                        idx === index &&
+                        <OverlayAttributes
+                            overlay={overlay}
+                            onChange={handleOverlayAttributeChange}
+                            onDeleteOverlay={handleDeleteOverlay}
+                            showDelete={overlays.length > 1}
+                        />
+                    ))}
+                    <div className={classes.saveContainer}>
+                        <TextField onChange={handleTemplateNameChange} value={templateName} label="Template Name" variant="outlined"/>
+                        <Fab className={classes.saveButton} color="primary" variant="extended" onClick={handleSaveOverlay}>
+                            <SaveIcon className={classes.extendedIcon}/>
+                            Save
+                        </Fab>
+                    </div>                
                 </Grid>
                 <Grid item xs className={classes.previewArea}>
-                    <OverlayPreview 
-                        width={width} 
-                        height={height}
-                        horizontal={horizontal}
-                        vertical={vertical}
-                        overlayColor={overlayColor}
-                        text={text}
-                        textAlignment={textAlignment}
-                        textColor={textColor}
-                        textFormats={textFormats} />
+                    <Typography variant='h3' align='center'>
+                        Template Preview
+                    </Typography>
+                    <div className={classes.preview}>
+                        {overlays.map((overlay, idx) => (
+                            <OverlayPreview {...overlay} />
+                        ))}
+                    </div>
                 </Grid>
             </Grid>
             <Snackbar open={isToastOpen} autoHideDuration={1500} onClose={handleCloseToast}>

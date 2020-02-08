@@ -22,12 +22,13 @@ type OverlaySliderProps = {
     name: string;
     min: number;
     max: number;
+    value: number;
     onValueChange(attribute: string, value: number): void;
 };
 
 export const OverlaySlider: React.FunctionComponent<OverlaySliderProps> = (props: OverlaySliderProps) => {
     const classes = useStyles();
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState(props.value);
 
     const handleSliderChange = (_: React.ChangeEvent<{}>, newValue: number | number[]) => {
         setValue(Number(newValue));
