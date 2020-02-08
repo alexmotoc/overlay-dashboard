@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { ColorPicker } from './ColorPicker';
-import { white } from './OverlayBuilder';
+import { white } from './OverlayAttributes';
 import { RGBColor } from 'react-color';
 
 const useStyles = makeStyles((theme: Theme) =>
