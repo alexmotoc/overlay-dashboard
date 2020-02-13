@@ -48,7 +48,7 @@ const useStyles = makeStyles({
     textStyle: {
         display: 'flex'
     },
-    extendedIcon: {
+    saveIcon: {
         marginRight: 10,
     },
     saveButton: {
@@ -164,7 +164,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                     <div className={classes.saveContainer}>
                         <TextField onChange={handleTemplateNameChange} value={templateName} label="Template Name" variant="outlined"/>
                         <Fab className={classes.saveButton} color="primary" variant="extended" onClick={handleSaveOverlay}>
-                            <SaveIcon className={classes.extendedIcon}/>
+                            <SaveIcon className={classes.saveIcon}/>
                             Save
                         </Fab>
                     </div>                
