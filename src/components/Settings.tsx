@@ -10,7 +10,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Switch from '@material-ui/core/Switch';
-import { Template } from './OverlayAttributes';
+import { Template, Overlay } from './OverlayAttributes';
 import { OverlayPreview } from './OverlayPreview';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -47,7 +47,8 @@ const useStyles = makeStyles({
         overflow: 'hidden'
     },
     templateList: {
-        marginTop: 50
+        marginTop: 50,
+        marginLeft: 50
     }
 });
 
@@ -55,12 +56,13 @@ export const Settings: React.FunctionComponent<{}> = () => {
     const classes = useStyles();
     const [templateChecked, setTemplateChecked] = React.useState<number[]>([]);
     const [templates, setTemplates] = React.useState<Template[]>([]);
+    const [activeTemplates, setActiveTemplates] = React.useState<Template[]>([]);
 
     React.useEffect(() => {
         const loadTemplates = async () => {
             const result = await axios(
                 'http://127.0.0.1:8000/overlays/',
-                );
+            );
             setTemplates(result.data);
         };
         
@@ -77,6 +79,8 @@ export const Settings: React.FunctionComponent<{}> = () => {
         newChecked.splice(currentIndex, 1);
       }
   
+      const active: Template[] = templates.filter((template, idx) => newChecked.includes(idx));
+      setActiveTemplates(active);
       setTemplateChecked(newChecked);
     };
 
@@ -88,9 +92,13 @@ export const Settings: React.FunctionComponent<{}> = () => {
                         Stream Preview
                     </Typography>
                     <div className={classes.preview}>
-                        {/* {overlays.map((overlay, idx) => (
-                            <OverlayPreview key={idx} {...overlay} />
-                        ))} */}
+                        {activeTemplates.map((template, _) => {
+                            const overlays: Overlay[] = JSON.parse(template.overlays);
+
+                            return (overlays.map((overlay, idx) => (
+                                <OverlayPreview key={idx} {...overlay} />
+                            )));
+                        })}
                     </div>
                     <div className={classes.effectsContainer}>
                         <Typography variant='h5'>
