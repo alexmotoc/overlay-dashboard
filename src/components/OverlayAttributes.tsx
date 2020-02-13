@@ -29,12 +29,17 @@ export type Text = {
 };
 
 export type Overlay = {
-    name?: string,
+    name?: string;
     size: Size;
     position: Position;
     colour: RGBColor;
     text: Text;
 };
+
+export type Template = {
+    name?: string;
+    overlays: Overlay[];
+}
 
 type OverlayAttributesProps = {
     overlay: Overlay;

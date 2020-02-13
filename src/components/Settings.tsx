@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Checkbox from '@material-ui/core/Checkbox';
 import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
@@ -9,6 +10,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Switch from '@material-ui/core/Switch';
+import { Template } from './OverlayAttributes';
+import { OverlayPreview } from './OverlayPreview';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { previewWidth, previewHeight } from './OverlayPreview';
@@ -50,7 +53,19 @@ const useStyles = makeStyles({
 
 export const Settings: React.FunctionComponent<{}> = () => {
     const classes = useStyles();
-    const [templateChecked, setTemplateChecked] = React.useState([0]);
+    const [templateChecked, setTemplateChecked] = React.useState<number[]>([]);
+    const [templates, setTemplates] = React.useState<Template[]>([]);
+
+    React.useEffect(() => {
+        const loadTemplates = async () => {
+            const result = await axios(
+                'http://127.0.0.1:8000/overlays/',
+                );
+            setTemplates(result.data);
+        };
+        
+        loadTemplates();
+    }, []);
 
     const handleTemplateToggle = (value: number) => () => {
       const currentIndex = templateChecked.indexOf(value);
@@ -92,21 +107,21 @@ export const Settings: React.FunctionComponent<{}> = () => {
                         Templates
                     </Typography>
                     <List className={classes.templateList}>
-                        {[1, 2, 3].map(value => {
-                            const labelId: string = `checkbox-template-label-${value}`;
+                        {templates.map((template, idx) => {
+                            const labelId: string = `checkbox-template-label-${idx}`;
 
                             return (
-                                <ListItem key={value} button onClick={handleTemplateToggle(value)}>
+                                <ListItem key={idx} button onClick={handleTemplateToggle(idx)}>
                                     <ListItemIcon>
                                         <Checkbox
                                             edge="start"
-                                            checked={templateChecked.indexOf(value) !== -1}
+                                            checked={templateChecked.indexOf(idx) !== -1}
                                             tabIndex={-1}
                                             disableRipple
                                             inputProps={{ 'aria-labelledby': labelId }}
                                         />
                                     </ListItemIcon>
-                                    <ListItemText primary={`Template ${value}`}/>
+                                    <ListItemText primary={template.name}/>
                                     <ListItemSecondaryAction>
                                         <IconButton edge="end" aria-label="edit">
                                             <EditIcon />
