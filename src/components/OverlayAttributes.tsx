@@ -38,7 +38,7 @@ export type Overlay = {
 
 export type Template = {
     name?: string;
-    overlays: Overlay[];
+    overlays: string;
 }
 
 type OverlayAttributesProps = {
