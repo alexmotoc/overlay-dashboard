@@ -1,7 +1,9 @@
 import * as React from 'react';
 import axios from 'axios';
+import AddIcon from '@material-ui/icons/Add';
 import Checkbox from '@material-ui/core/Checkbox';
 import EditIcon from '@material-ui/icons/Edit';
+import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
@@ -9,10 +11,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+import SaveIcon from '@material-ui/icons/Save';
 import Switch from '@material-ui/core/Switch';
 import { Template, Overlay } from './OverlayAttributes';
 import { OverlayPreview } from './OverlayPreview';
-import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { previewWidth, previewHeight } from './OverlayPreview';
 import grey from '@material-ui/core/colors/grey';
@@ -49,6 +52,14 @@ const useStyles = makeStyles({
     templateList: {
         marginTop: 50,
         marginLeft: 50
+    },
+    saveContainer: {
+        display: 'flex',
+        marginTop: 25,
+        justifyContent: 'center'
+    },
+    saveIcon: {
+        marginRight: 10
     }
 });
 
@@ -108,7 +119,13 @@ export const Settings: React.FunctionComponent<{}> = () => {
                             <Typography>Contrast Adjustment</Typography>
                             <Switch className={classes.optionToggle}/>
                         </div>
-                    </div>               
+                    </div>  
+                    <div className={classes.saveContainer}>
+                        <Fab color="primary" variant="extended">
+                            <SaveIcon className={classes.saveIcon}/>
+                            Save
+                        </Fab>
+                    </div>             
                 </Grid>
                 <Grid item xs className={classes.rightGrid}>
                     <Typography variant='h3' align='center'>
@@ -139,6 +156,11 @@ export const Settings: React.FunctionComponent<{}> = () => {
                             );
                         })}
                     </List>
+                    <div className={classes.saveContainer}>
+                        <IconButton href="\overlay-builder" color="primary" aria-label="add">
+                            <AddIcon />
+                        </IconButton>
+                    </div>
                 </Grid>
             </Grid>
         </React.Fragment>
