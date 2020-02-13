@@ -2,6 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
 import Checkbox from '@material-ui/core/Checkbox';
+import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
@@ -19,6 +20,7 @@ import { OverlayPreview } from './OverlayPreview';
 import { makeStyles } from '@material-ui/core/styles';
 import { previewWidth, previewHeight } from './OverlayPreview';
 import grey from '@material-ui/core/colors/grey';
+import red from '@material-ui/core/colors/red';
 
 const useStyles = makeStyles({
     optionContainer: {
@@ -60,6 +62,10 @@ const useStyles = makeStyles({
     },
     saveIcon: {
         marginRight: 10
+    },
+    deleteButton: {
+        marginLeft: 15,
+        color: red[500]
     }
 });
 
@@ -150,6 +156,9 @@ export const Settings: React.FunctionComponent<{}> = () => {
                                     <ListItemSecondaryAction>
                                         <IconButton edge="end" aria-label="edit">
                                             <EditIcon />
+                                        </IconButton>
+                                        <IconButton className={classes.deleteButton} edge="end" aria-label="delete">
+                                            <DeleteIcon />
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                 </ListItem>
