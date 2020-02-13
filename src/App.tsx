@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { DashboardDrawer } from './components/DashboardDrawer';
 import { OverlayBuilder } from './components/OverlayBuilder';
+import { Settings } from './components/Settings';
 import { ThemeProvider, makeStyles } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import cyan from '@material-ui/core/colors/cyan';
@@ -54,6 +55,11 @@ const App: React.FC = () => {
             <Route path='/overlay-builder'>
               <main className={classes.content}>
                 <OverlayBuilder />
+              </main>
+            </Route>
+            <Route path='/settings'>
+              <main className={classes.content}>
+                <Settings/>
               </main>
             </Route>
           </Switch>
