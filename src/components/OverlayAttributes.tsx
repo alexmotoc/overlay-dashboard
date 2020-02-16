@@ -43,7 +43,7 @@ export type Template = {
 
 type OverlayAttributesProps = {
     overlay: Overlay;
-    onChange(overlay: Overlay): void;
+    onChange(attribute: string, value: string | number | RGBColor | TextAlignment | TextFormats[]): void;
     onDeleteOverlay(): void;
     showDelete: boolean;
 };
@@ -121,97 +121,26 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
     const classes = useStyles();
     const overlay: Overlay = props.overlay;
 
-    const [overlayName, setOverlayName] = React.useState(overlay.name);
-    const [width, setWidth] = React.useState(overlay.size.width);
-    const [height, setHeight] = React.useState(overlay.size.height);
-    const [horizontal, setHorizontal] = React.useState(overlay.position.horizontal);
-    const [vertical, setVertical] = React.useState(overlay.position.vertical);
-    const [text, setText] = React.useState(overlay.text.content);
-    const [textAlignment, setTextAlignment] = React.useState(overlay.text.alignment);
-    const [textFormats, setTextFormats] = React.useState(overlay.text.format);
-    const [textColor, setTextColor] = React.useState(overlay.text.colour);
-    const [overlayColor, setOverlayColor] = React.useState(overlay.colour);
-
-    const getCurrentOverlay = () => {
-        return {
-            name: overlayName,
-            size: {
-                width: width,
-                height: height
-            },
-            position: {
-                horizontal: horizontal,
-                vertical: vertical
-            },
-            colour: overlayColor,
-            text: {
-                content: text,
-                alignment: textAlignment,
-                format: textFormats,
-                colour: textColor
-            }
-        };
-    };
-
     const handleValueChange = (attribute: string, value: number) => {
-        switch (attribute.toLowerCase()) {
-            case 'width':
-                setWidth(value);
-                break;
-            case 'height':
-                setHeight(value);
-                break;
-            case 'horizontal':
-                setHorizontal(value);
-                break;
-            case 'vertical':
-                setVertical(value);
-                break;
-        }
-        props.onChange(getCurrentOverlay());
+        const prefix: string = attribute.toLowerCase() == 'width' || attribute.toLowerCase() == 'height' ? 'size' : 'position';
+        props.onChange(`${prefix}.${attribute.toLowerCase()}`, value);
     };
 
     const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setText(event.target.value);
-        const currentOverlay: Overlay = getCurrentOverlay();
-        currentOverlay.text.content = event.target.value;
-        props.onChange(currentOverlay);
+        props.onChange('text.content', event.target.value);
     };
 
     const handleOverlayNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setOverlayName(event.target.value);
-        const currentOverlay: Overlay = getCurrentOverlay();
-        currentOverlay.name = event.target.value;
-        props.onChange(currentOverlay);
+        props.onChange('name', event.target.value);
     };
 
     const handleColorChange = (color: RGBColor) => {
-        setOverlayColor(color);
-        const currentOverlay: Overlay = getCurrentOverlay();
-        currentOverlay.colour = color;
-        props.onChange(currentOverlay);
+        props.onChange('colour', color);
     };
 
-    const handleTextAlignmentChange = (newAlignment: TextAlignment) => {
-        setTextAlignment(newAlignment);
-        const currentOverlay: Overlay = getCurrentOverlay();
-        currentOverlay.text.alignment = newAlignment;
-        props.onChange(currentOverlay);
-    };
-
-    const handleTextColorChange = (color: RGBColor) => {
-        setTextColor(color);
-        const currentOverlay: Overlay = getCurrentOverlay();
-        currentOverlay.text.colour = color;
-        props.onChange(currentOverlay);
-    };
-
-    const handleTextFormatsChange = (newFormats: TextFormats[]) => {
-        setTextFormats(newFormats);
-        const currentOverlay: Overlay = getCurrentOverlay();
-        currentOverlay.text.format = newFormats;
-        props.onChange(currentOverlay);
-    };
+    const handleTextStyleChange = (attribute: string, value: TextAlignment | RGBColor | TextFormats[]) => {
+        props.onChange(`text.${attribute}`, value);
+    }
 
     return (
         <React.Fragment>
@@ -220,7 +149,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
                     <DeleteIcon />
                 </IconButton>}
                 <TextField 
-                    value={overlayName}
+                    value={overlay.name}
                     InputProps={{
                         disableUnderline: true,
                         classes: {
@@ -238,7 +167,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
                 name='Height' 
                 min={0}
                 max={100}
-                value={height}
+                value={overlay.size.height}
                 onValueChange={handleValueChange}/>
             <OverlaySlider 
                 className={classes.element}
@@ -246,7 +175,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
                 name='Width' 
                 min={0}
                 max={100}
-                value={width}
+                value={overlay.size.width}
                 onValueChange={handleValueChange}/>
             <Typography variant='h5' className={classes.headerText}>
                 Position
@@ -257,7 +186,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
                 name='Horizontal' 
                 min={0}
                 max={streamWidth}
-                value={horizontal}
+                value={overlay.position.horizontal}
                 onValueChange={handleValueChange}/>
             <OverlaySlider 
                 className={classes.element}
@@ -265,7 +194,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
                 name='Vertical' 
                 min={0}
                 max={streamHeight}
-                value={vertical}
+                value={overlay.position.vertical}
                 onValueChange={handleValueChange}/>
             <div>
                 <Typography variant='h5' className={classes.headerText}>
@@ -273,7 +202,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
                 </Typography> 
                 <ColorPicker
                     name='Overlay'
-                    color={overlayColor}
+                    color={overlay.colour}
                     colorChangeCallback={handleColorChange}>
                 </ColorPicker> 
             </div>                       
@@ -282,15 +211,16 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
             </Typography>
             <TextField 
                 className={classes.element}
-                disabled={width === 0 || height === 0}
+                disabled={overlay.size.width === 0 || overlay.size.height === 0}
                 variant='outlined'
-                value={text}
+                value={overlay.text.content}
                 onChange={handleTextChange} /> 
             <TextStyle
                 className={`${classes.element} ${classes.textStyle}`}
-                textAlignmentCallback={handleTextAlignmentChange}
-                textColorCallback={handleTextColorChange}
-                textFormatsCallback={handleTextFormatsChange}/>
+                alignment={overlay.text.alignment}
+                color={overlay.text.colour}
+                format={overlay.text.format}
+                onChange={handleTextStyleChange}/>
         </React.Fragment>
     )
 }
