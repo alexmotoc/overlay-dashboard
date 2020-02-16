@@ -138,9 +138,15 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     };
 
     const handleSaveOverlay = () => {
-        axios.post('http://127.0.0.1:8000/overlays/', {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
-            setIsToastOpen(true);
-        });
+        if (id) {
+            axios.put(`http://127.0.0.1:8000/overlays/${id}/`, {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
+                setIsToastOpen(true);
+            });
+        } else {
+            axios.post('http://127.0.0.1:8000/overlays/', {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
+                setIsToastOpen(true);
+            });
+        }
     }
 
     const handleCloseToast = () => {
