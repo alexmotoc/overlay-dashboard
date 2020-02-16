@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as _ from "lodash";
 import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
@@ -13,10 +14,13 @@ import Typography from '@material-ui/core/Typography';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import grey from '@material-ui/core/colors/grey';
 import red from '@material-ui/core/colors/red';
+import { useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { OverlayPreview } from './OverlayPreview';
 import { defaultOverlay, Overlay, OverlayAttributes } from './OverlayAttributes';
 import { previewWidth, previewHeight } from './OverlayPreview';
+import { RGBColor } from 'react-color';
+import { TextAlignment, TextFormats } from './TextStyle';
 
 export const streamWidth: number = 1920;
 export const streamHeight: number = 1080;
@@ -93,6 +97,21 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     const [overlays, setOverlays] = React.useState<Overlay[]>([defaultOverlay]);
     const [index, setIndex] = React.useState<number>(0);
     const [templateName, setTemplateName] = React.useState<string>('');
+    const id: string | null = new URLSearchParams(useLocation().search).get('id');
+
+    React.useEffect(() => {
+        const loadTemplate = async () => {
+            if (id) {
+                const result = await axios(
+                    `http://127.0.0.1:8000/overlays/${id}`,
+                );
+                setTemplateName(result.data.name);
+                setOverlays(JSON.parse(result.data.overlays));
+            }
+        };
+
+        loadTemplate();
+    }, []);
 
     const handleIndexChange = (_: React.ChangeEvent<{}>, newIndex: number) => {
         setIndex(newIndex);
@@ -109,8 +128,8 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
         setIndex(0);
     };
 
-    const handleOverlayAttributeChange = (overlay: Overlay) => {
-        overlays[index] = overlay;
+    const handleOverlayAttributeChange = (attribute: string, value: string | number | RGBColor | TextAlignment | TextFormats[]) => {
+        _.set(overlays[index], attribute, value);
         setOverlays([...overlays]);
     };
 
@@ -151,16 +170,12 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
                             </IconButton>
                         </div>
                     </div>
-                    {overlays.map((overlay, idx) => (
-                        idx === index &&
-                        <OverlayAttributes
-                            key={idx}
-                            overlay={overlay}
-                            onChange={handleOverlayAttributeChange}
-                            onDeleteOverlay={handleDeleteOverlay}
-                            showDelete={overlays.length > 1}
-                        />
-                    ))}
+                    <OverlayAttributes
+                        overlay={overlays[index]}
+                        onChange={handleOverlayAttributeChange}
+                        onDeleteOverlay={handleDeleteOverlay}
+                        showDelete={overlays.length > 1}
+                    />
                     <div className={classes.saveContainer}>
                         <TextField onChange={handleTemplateNameChange} value={templateName} label="Template Name" variant="outlined"/>
                         <Fab className={classes.saveButton} color="primary" variant="extended" onClick={handleSaveOverlay}>

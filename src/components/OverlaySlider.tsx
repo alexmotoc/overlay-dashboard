@@ -28,23 +28,20 @@ type OverlaySliderProps = {
 
 export const OverlaySlider: React.FunctionComponent<OverlaySliderProps> = (props: OverlaySliderProps) => {
     const classes = useStyles();
-    const [value, setValue] = React.useState(props.value);
 
     const handleSliderChange = (_: React.ChangeEvent<{}>, newValue: number | number[]) => {
-        setValue(Number(newValue));
         props.onValueChange(props.name, Number(newValue));
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(Number(event.target.value));
         props.onValueChange(props.name, Number(event.target.value));
     };
 
     const handleBlur = () => {
-        if (value < 0) {
-          setValue(0);
-        } else if (value > 100) {
-          setValue(100);
+        if (props.value < 0) {
+          props.onValueChange(props.name, 0);
+        } else if (props.value > 100) {
+          props.onValueChange(props.name, 100);
         }
     };
 
@@ -67,7 +64,7 @@ export const OverlaySlider: React.FunctionComponent<OverlaySliderProps> = (props
                 </Grid>
                 <Grid item xs>
                     <Slider
-                        value={value}
+                        value={props.value}
                         onChange={handleSliderChange}
                         min={props.min}
                         max={props.max}
@@ -77,7 +74,7 @@ export const OverlaySlider: React.FunctionComponent<OverlaySliderProps> = (props
                 <Grid item>
                     <Input
                         className={classes.input}
-                        value={value}
+                        value={props.value}
                         margin="dense"
                         onChange={handleInputChange}
                         onBlur={handleBlur}

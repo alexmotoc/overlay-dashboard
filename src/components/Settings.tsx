@@ -96,7 +96,7 @@ export const Settings: React.FunctionComponent<{}> = () => {
         newChecked.splice(currentIndex, 1);
       }
   
-      const active: Template[] = templates.filter((template, idx) => newChecked.includes(idx));
+      const active: Template[] = templates.filter((_, idx) => newChecked.includes(idx));
       setActiveTemplates(active);
       setTemplateChecked(newChecked);
     };

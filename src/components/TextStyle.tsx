@@ -52,39 +52,33 @@ export type TextFormats = 'bold' | 'italic' | 'underlined';
 
 type TextStyleProps = {
     className: string;
-    textAlignmentCallback(alignment: TextAlignment): void;
-    textColorCallback(color: RGBColor): void;
-    textFormatsCallback(formats: TextFormats[]): void;
+    alignment: TextAlignment;
+    color: RGBColor;
+    format: TextFormats[];
+    onChange(attribute: string, value: TextAlignment | RGBColor | TextFormats[]): void;
 };
 
 export const TextStyle: React.FunctionComponent<TextStyleProps> = (props: TextStyleProps) => {
-    const [alignment, setAlignment] = React.useState('center');
-    const [color, setColor] = React.useState(white);
-    const [formats, setFormats] = React.useState(() => ['']);
+    const classes = useStyles();
 
     const handleAlignmentChange = (event: React.MouseEvent<HTMLElement>, newAlignment: TextAlignment) => {
-        setAlignment(newAlignment);
-        props.textAlignmentCallback(newAlignment);
+        props.onChange('alignment', newAlignment);
     };
 
     const handleColorChange = (color: RGBColor) => {
-        setColor(color);
-        props.textColorCallback(color);
+        props.onChange('colour', color);
     }
 
     const handleFormatChange = (event: React.MouseEvent<HTMLElement>, newFormats: TextFormats[]) => {
-        setFormats(newFormats);
-        props.textFormatsCallback(newFormats);
+        props.onChange('format', newFormats);
     };
-
-    const classes = useStyles();
 
     return (
         <div className={`${classes.container} ${props.className}`}>
             <Paper elevation={0} className={classes.paper}>
                 <StyledToggleButtonGroup
                 size="small"
-                value={alignment}
+                value={props.alignment}
                 exclusive
                 onChange={handleAlignmentChange}
                 aria-label="text alignment"
@@ -102,7 +96,7 @@ export const TextStyle: React.FunctionComponent<TextStyleProps> = (props: TextSt
                 <Divider orientation="vertical" className={classes.divider} />
                 <StyledToggleButtonGroup
                 size="small"
-                value={formats}
+                value={props.format}
                 onChange={handleFormatChange}
                 arial-label="text formatting"
                 >
@@ -117,7 +111,7 @@ export const TextStyle: React.FunctionComponent<TextStyleProps> = (props: TextSt
                     </ToggleButton>
                     <ColorPicker
                         name='Text'
-                        color={color}
+                        color={props.color}
                         colorChangeCallback={handleColorChange}>
                     </ColorPicker>
                 </StyledToggleButtonGroup>
