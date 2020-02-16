@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as _ from "lodash";
 import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -14,7 +15,9 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import SaveIcon from '@material-ui/icons/Save';
+import Snackbar from '@material-ui/core/Snackbar';
 import Switch from '@material-ui/core/Switch';
+import { Alert } from './OverlayBuilder';
 import { Template, Overlay } from './OverlayAttributes';
 import { OverlayPreview } from './OverlayPreview';
 import { makeStyles } from '@material-ui/core/styles';
@@ -71,15 +74,18 @@ const useStyles = makeStyles({
 
 export const Settings: React.FunctionComponent<{}> = () => {
     const classes = useStyles();
+
     const [templateChecked, setTemplateChecked] = React.useState<number[]>([]);
     const [templates, setTemplates] = React.useState<Template[]>([]);
     const [activeTemplates, setActiveTemplates] = React.useState<Template[]>([]);
+    const [isToastOpen, setIsToastOpen] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         const loadTemplates = async () => {
             const result = await axios(
                 'http://127.0.0.1:8000/overlays/',
             );
+            console.log(result.data);
             setTemplates(result.data);
         };
         
@@ -99,6 +105,20 @@ export const Settings: React.FunctionComponent<{}> = () => {
       const active: Template[] = templates.filter((_, idx) => newChecked.includes(idx));
       setActiveTemplates(active);
       setTemplateChecked(newChecked);
+    };
+
+    const handleTemplateDelete = (index: number) => {
+        const template: Template = templates[index];
+        setTemplates(templates.slice(0, index).concat(templates.slice(index + 1)));
+        setActiveTemplates(activeTemplates.filter(el => !_.isEqual(el, template)));
+
+        axios.delete(template.url).then(response => {
+            setIsToastOpen(true);
+        });
+    };
+
+    const handleCloseToast = () => {
+        setIsToastOpen(false);
     };
 
     return (
@@ -140,6 +160,8 @@ export const Settings: React.FunctionComponent<{}> = () => {
                     <List className={classes.templateList}>
                         {templates.map((template, idx) => {
                             const labelId: string = `checkbox-template-label-${idx}`;
+                            const splitUrl: string[] = template.url.split('/');
+                            const templateId: string = splitUrl[splitUrl.length - 2];
 
                             return (
                                 <ListItem key={idx} button onClick={handleTemplateToggle(idx)}>
@@ -154,10 +176,10 @@ export const Settings: React.FunctionComponent<{}> = () => {
                                     </ListItemIcon>
                                     <ListItemText primary={template.name}/>
                                     <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="edit">
+                                        <IconButton href={`/overlay-builder?id=${templateId}`} edge="end" aria-label="edit">
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton className={classes.deleteButton} edge="end" aria-label="delete">
+                                        <IconButton className={classes.deleteButton} edge="end" aria-label="delete" onClick={() => handleTemplateDelete(idx)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </ListItemSecondaryAction>
@@ -166,12 +188,17 @@ export const Settings: React.FunctionComponent<{}> = () => {
                         })}
                     </List>
                     <div className={classes.saveContainer}>
-                        <IconButton href="\overlay-builder" color="primary" aria-label="add">
+                        <IconButton href="/overlay-builder" color="primary" aria-label="add">
                             <AddIcon />
                         </IconButton>
                     </div>
                 </Grid>
             </Grid>
+            <Snackbar open={isToastOpen} autoHideDuration={1500} onClose={handleCloseToast}>
+                <Alert onClose={handleCloseToast} severity="success">
+                Template was deleted successfully!
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }

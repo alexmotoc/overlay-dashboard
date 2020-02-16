@@ -37,7 +37,8 @@ export type Overlay = {
 };
 
 export type Template = {
-    name?: string;
+    url: string;
+    name: string;
     overlays: string;
 }
 
@@ -122,7 +123,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
     const overlay: Overlay = props.overlay;
 
     const handleValueChange = (attribute: string, value: number) => {
-        const prefix: string = attribute.toLowerCase() == 'width' || attribute.toLowerCase() == 'height' ? 'size' : 'position';
+        const prefix: string = attribute.toLowerCase() === 'width' || attribute.toLowerCase() === 'height' ? 'size' : 'position';
         props.onChange(`${prefix}.${attribute.toLowerCase()}`, value);
     };
 
