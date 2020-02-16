@@ -25,7 +25,7 @@ import { TextAlignment, TextFormats } from './TextStyle';
 export const streamWidth: number = 1920;
 export const streamHeight: number = 1080;
 
-const Alert = (props: AlertProps) => {
+export const Alert = (props: AlertProps) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
   

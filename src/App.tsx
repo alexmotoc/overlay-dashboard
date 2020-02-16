@@ -10,8 +10,7 @@ import deepOrange from '@material-ui/core/colors/deepOrange';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  useLocation
+  Route
 } from "react-router-dom";
 
 const theme = createMuiTheme({
