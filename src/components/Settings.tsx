@@ -83,9 +83,8 @@ export const Settings: React.FunctionComponent<{}> = () => {
     React.useEffect(() => {
         const loadTemplates = async () => {
             const result = await axios(
-                'http://127.0.0.1:8000/overlays/',
+                'https://tungsten.alexlogan.co.uk/overlays/',
             );
-            console.log(result.data);
             setTemplates(result.data);
         };
         

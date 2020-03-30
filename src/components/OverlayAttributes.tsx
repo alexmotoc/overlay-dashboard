@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ColorPicker } from './ColorPicker';
 import { OverlaySlider } from './OverlaySlider';
-import { TextAlignment, TextStyle, TextFormats } from './TextStyle';
+import { TextAlignment, TextStyle, TextFormat } from './TextStyle';
 import { Typography } from '@material-ui/core';
 import { streamHeight, streamWidth } from './OverlayBuilder';
 import red from '@material-ui/core/colors/red';
@@ -25,7 +25,7 @@ export type Text = {
     content: string;
     alignment: TextAlignment;
     colour: RGBColor;
-    format: TextFormats[];
+    format: TextFormat[];
 };
 
 export type Overlay = {
@@ -44,7 +44,7 @@ export type Template = {
 
 type OverlayAttributesProps = {
     overlay: Overlay;
-    onChange(attribute: string, value: string | number | RGBColor | TextAlignment | TextFormats[]): void;
+    onChange(attribute: string, value: string | number | RGBColor | TextAlignment | TextFormat[]): void;
     onDeleteOverlay(): void;
     showDelete: boolean;
 };
@@ -66,7 +66,7 @@ export const defaultOverlay: Overlay = {
     text: {
         content: '',
         alignment: 'center' as TextAlignment,
-        format: ['' as TextFormats],
+        format: [],
         colour: white
     }
 };
@@ -139,7 +139,7 @@ export const OverlayAttributes: React.FunctionComponent<OverlayAttributesProps> 
         props.onChange('colour', color);
     };
 
-    const handleTextStyleChange = (attribute: string, value: TextAlignment | RGBColor | TextFormats[]) => {
+    const handleTextStyleChange = (attribute: string, value: TextAlignment | RGBColor | TextFormat[]) => {
         props.onChange(`text.${attribute}`, value);
     }
 

@@ -47,14 +47,14 @@ const StyledToggleButtonGroup = withStyles(theme => ({
 }))(ToggleButtonGroup);
 
 export type TextAlignment = 'left' | 'center' | 'right';
-export type TextFormats = 'bold' | 'italic' | 'underlined';
+export type TextFormat = 'bold' | 'italic' | 'underlined';
 
 type TextStyleProps = {
     className: string;
     alignment: TextAlignment;
     color: RGBColor;
-    format: TextFormats[];
-    onChange(attribute: string, value: TextAlignment | RGBColor | TextFormats[]): void;
+    format: TextFormat[];
+    onChange(attribute: string, value: TextAlignment | RGBColor | TextFormat[]): void;
 };
 
 export const TextStyle: React.FunctionComponent<TextStyleProps> = (props: TextStyleProps) => {
@@ -68,7 +68,7 @@ export const TextStyle: React.FunctionComponent<TextStyleProps> = (props: TextSt
         props.onChange('colour', color);
     }
 
-    const handleFormatChange = (event: React.MouseEvent<HTMLElement>, newFormats: TextFormats[]) => {
+    const handleFormatChange = (event: React.MouseEvent<HTMLElement>, newFormats: TextFormat[]) => {
         props.onChange('format', newFormats);
     };
 

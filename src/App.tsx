@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import { Dashboard } from './components/Dashboard';
 import { DashboardDrawer } from './components/DashboardDrawer';
 import { OverlayBuilder } from './components/OverlayBuilder';
 import { Settings } from './components/Settings';
@@ -52,6 +53,11 @@ const App: React.FC = () => {
         <div className={classes.root}>
           <DashboardDrawer/>
           <Switch>
+            <Route path='/dashboard'>
+              <main className={classes.content}>
+                <Dashboard />
+              </main>
+            </Route>
             <Route path='/overlay-builder'>
               <main className={classes.content}>
                 <OverlayBuilder />
