@@ -20,7 +20,7 @@ import { OverlayPreview } from './OverlayPreview';
 import { defaultOverlay, Overlay, OverlayAttributes } from './OverlayAttributes';
 import { previewWidth, previewHeight } from './OverlayPreview';
 import { RGBColor } from 'react-color';
-import { TextAlignment, TextFormats } from './TextStyle';
+import { TextAlignment, TextFormat } from './TextStyle';
 
 export const streamWidth: number = 1920;
 export const streamHeight: number = 1080;
@@ -103,7 +103,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
         const loadTemplate = async () => {
             if (id) {
                 const result = await axios(
-                    `http://127.0.0.1:8000/overlays/${id}`,
+                    `https://tungsten.alexlogan.co.uk/overlays/${id}`,
                 );
                 setTemplateName(result.data.name);
                 setOverlays(JSON.parse(result.data.overlays));
@@ -128,7 +128,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
         setIndex(0);
     };
 
-    const handleOverlayAttributeChange = (attribute: string, value: string | number | RGBColor | TextAlignment | TextFormats[]) => {
+    const handleOverlayAttributeChange = (attribute: string, value: string | number | RGBColor | TextAlignment | TextFormat[]) => {
         _.set(overlays[index], attribute, value);
         setOverlays([...overlays]);
     };
@@ -139,11 +139,11 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
 
     const handleSaveOverlay = () => {
         if (id) {
-            axios.put(`http://127.0.0.1:8000/overlays/${id}/`, {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
+            axios.put(`https://tungsten.alexlogan.co.uk/overlays/${id}/`, {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
                 setIsToastOpen(true);
             });
         } else {
-            axios.post('http://127.0.0.1:8000/overlays/', {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
+            axios.post('https://tungsten.alexlogan.co.uk/overlays/', {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
                 setIsToastOpen(true);
             });
         }
