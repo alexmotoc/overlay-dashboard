@@ -72,6 +72,11 @@ const useStyles = makeStyles({
     }
 });
 
+type Effect = {
+    name: string;
+    isActive: boolean;
+};
+
 export const Settings: React.FunctionComponent<{}> = () => {
     const classes = useStyles();
 
@@ -79,6 +84,8 @@ export const Settings: React.FunctionComponent<{}> = () => {
     const [templates, setTemplates] = React.useState<Template[]>([]);
     const [activeTemplates, setActiveTemplates] = React.useState<Template[]>([]);
     const [isToastOpen, setIsToastOpen] = React.useState<boolean>(false);
+    const [toastMessage, setToastMessage] = React.useState<string>("");
+    const [effects, setEffects] = React.useState<Effect[]>([]);
 
     React.useEffect(() => {
         const loadTemplates = async () => {
@@ -89,7 +96,18 @@ export const Settings: React.FunctionComponent<{}> = () => {
         };
         
         loadTemplates();
+
+        const supportedEffects: Effect[] = [{
+            'name': 'Contrast Adjustment',
+            'isActive': true
+        }];
+        setEffects(supportedEffects);
     }, []);
+
+    const handleEffectToggle = (idx: number, _: React.ChangeEvent<HTMLInputElement>) => {
+        effects[idx].isActive = !effects[idx].isActive;
+        setEffects([...effects]);
+    };
 
     const handleTemplateToggle = (value: number) => () => {
       const currentIndex = templateChecked.indexOf(value);
@@ -111,8 +129,26 @@ export const Settings: React.FunctionComponent<{}> = () => {
         setTemplates(templates.slice(0, index).concat(templates.slice(index + 1)));
         setActiveTemplates(activeTemplates.filter(el => !_.isEqual(el, template)));
 
-        axios.delete(template.url).then(response => {
+        axios.delete(template.url).then(_ => {
+            setToastMessage('Template was deleted successfully!');
             setIsToastOpen(true);
+        });
+    };
+
+    const handleSaveSettings = () => {
+        axios.get("https://tungsten.alexlogan.co.uk/effect/b5583fa0-60ac-4ce1-8ba5-352d80757933/").then(response => {
+            const settings = JSON.parse(response.data.effects);
+            
+            settings.templates = activeTemplates.map(el => {
+                const urlSplit = el.url.split('/')
+                return urlSplit[urlSplit.length - 2]
+            });
+            settings.effects = effects;
+
+            axios.put("https://tungsten.alexlogan.co.uk/effect/b5583fa0-60ac-4ce1-8ba5-352d80757933/", {"effects": JSON.stringify(settings)}).then(_ => {
+                setToastMessage('Settings were saved successfully!');
+                setIsToastOpen(true);
+            });
         });
     };
 
@@ -140,13 +176,15 @@ export const Settings: React.FunctionComponent<{}> = () => {
                         <Typography variant='h5'>
                             Effects and Enhancements
                         </Typography>
-                        <div className={classes.optionContainer}>
-                            <Typography>Contrast Adjustment</Typography>
-                            <Switch className={classes.optionToggle}/>
-                        </div>
+                        {effects.map((el, idx) => (
+                            <div key={idx} className={classes.optionContainer}>
+                                <Typography>{el.name}</Typography>
+                                <Switch className={classes.optionToggle} checked={el.isActive} onChange={(event) => handleEffectToggle(idx, event)}/>
+                            </div>
+                        ))}
                     </div>  
                     <div className={classes.saveContainer}>
-                        <Fab color="primary" variant="extended">
+                        <Fab color="primary" variant="extended" onClick={handleSaveSettings}>
                             <SaveIcon className={classes.saveIcon}/>
                             Save
                         </Fab>
@@ -195,7 +233,7 @@ export const Settings: React.FunctionComponent<{}> = () => {
             </Grid>
             <Snackbar open={isToastOpen} autoHideDuration={1500} onClose={handleCloseToast}>
                 <Alert onClose={handleCloseToast} severity="success">
-                Template was deleted successfully!
+                    {toastMessage}
                 </Alert>
             </Snackbar>
         </React.Fragment>
