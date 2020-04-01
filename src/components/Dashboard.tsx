@@ -98,7 +98,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
         chatClient.onPrivmsg((channel, user, message) => {
             console.log(message);
             const newChat: Chat[] = chat;
-            if (newChat.length == 0 || (newChat.length > 0 && !_.isEqual(newChat[newChat.length - 1], {user: user, message: message}))) {
+            if (newChat.length === 0 || (newChat.length > 0 && !_.isEqual(newChat[newChat.length - 1], {user: user, message: message}))) {
                 newChat.push({user: user, message: message});
                 setChat([...newChat]);
             }
@@ -158,7 +158,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
                         <Typography variant="h4" align="center">
                             {title}
                         </Typography> 
-                        <img className={classes.thumbnail} src={thumbnail}/> 
+                        <img className={classes.thumbnail} src={thumbnail} alt="Stream Thumbnail"/> 
                         <div className={classes.infoContainer}>
                             <div className={classes.statContainer}> 
                                 <PeopleIcon fontSize='large'/>
