@@ -97,11 +97,10 @@ export const Settings: React.FunctionComponent<{}> = () => {
         
         loadTemplates();
 
-        const supportedEffects: Effect[] = [{
-            'name': 'Contrast Adjustment',
-            'isActive': true
-        }];
-        setEffects(supportedEffects);
+        axios.get("https://tungsten.alexlogan.co.uk/effect/b5583fa0-60ac-4ce1-8ba5-352d80757933/").then(response => {
+            const settings = JSON.parse(response.data.effects);
+            setEffects(settings.effects);
+        });
     }, []);
 
     const handleEffectToggle = (idx: number, _: React.ChangeEvent<HTMLInputElement>) => {

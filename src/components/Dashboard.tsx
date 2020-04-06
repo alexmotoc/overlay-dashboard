@@ -96,7 +96,6 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
         await chatClient.connect();
     
         chatClient.onPrivmsg((channel, user, message) => {
-            console.log(message);
             const newChat: Chat[] = chat;
             if (newChat.length === 0 || (newChat.length > 0 && !_.isEqual(newChat[newChat.length - 1], {user: user, message: message}))) {
                 newChat.push({user: user, message: message});
@@ -130,7 +129,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
     };
 
     React.useEffect(() => {
-        axios.get('http://127.0.0.1:8000/user/abffc0bc-99db-4d51-be70-e992e6d61715/').then(response => {
+        axios.get('https://tungsten.alexlogan.co.uk/user/b0960c68-af68-4e5b-8447-1150878998c1/').then(response => {
             const tokenData = JSON.parse(response.data.tokens);
 
             axios.get('https://api.twitch.tv/helix/users', { headers: {"Authorization" : `Bearer ${tokenData.twitch.authentication}`}}).then(response => {
