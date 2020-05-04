@@ -139,8 +139,8 @@ export const Settings: React.FunctionComponent<{}> = () => {
             const settings = JSON.parse(response.data.effects);
             
             settings.templates = activeTemplates.map(el => {
-                const urlSplit = el.url.split('/')
-                return urlSplit[urlSplit.length - 2]
+                const urlSplit = el.url.split('/');
+                return urlSplit[urlSplit.length - 2];
             });
             settings.effects = effects;
 
@@ -175,12 +175,24 @@ export const Settings: React.FunctionComponent<{}> = () => {
                         <Typography variant='h5'>
                             Effects and Enhancements
                         </Typography>
-                        {effects.map((el, idx) => (
-                            <div key={idx} className={classes.optionContainer}>
-                                <Typography>{el.name}</Typography>
-                                <Switch className={classes.optionToggle} checked={el.isActive} onChange={(event) => handleEffectToggle(idx, event)}/>
-                            </div>
-                        ))}
+                        <Grid container spacing={2}>
+                            <Grid item xs>
+                            {effects.slice(0, effects.length / 2).map((el, idx) => (
+                                <div key={idx} className={classes.optionContainer}>
+                                    <Typography>{el.name}</Typography>
+                                    <Switch className={classes.optionToggle} checked={el.isActive} onChange={(event) => handleEffectToggle(idx, event)}/>
+                                </div>
+                            ))}
+                            </Grid>
+                            <Grid item xs>
+                            {effects.slice(effects.length / 2).map((el, idx) => (
+                                <div key={idx} className={classes.optionContainer}>
+                                    <Typography>{el.name}</Typography>
+                                    <Switch className={classes.optionToggle} checked={el.isActive} onChange={(event) => handleEffectToggle(idx, event)}/>
+                                </div>
+                            ))}
+                            </Grid>
+                        </Grid>
                     </div>  
                     <div className={classes.saveContainer}>
                         <Fab color="primary" variant="extended" onClick={handleSaveSettings}>

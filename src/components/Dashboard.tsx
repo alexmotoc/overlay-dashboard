@@ -56,6 +56,7 @@ const useStyles = makeStyles({
 });
 
 type Chat = {
+    time: string;
     user: string;
     message: string;
 };
@@ -70,6 +71,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
     const [chat, setChat] = React.useState<Chat[]>([]);
     const [isOnline, setIsOnline] = React.useState<boolean>(false);
 
+    // Connect to the Twitch channel's chat
     (async () => {
         const clientId = '0qmxdyuchkdcpkfktmq2t47z06eng1';
         const clientSecret = '7b00yip56b78z0kiwt9bvduia5oinn';
@@ -77,6 +79,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
         let response = await axios.get('https://tungsten.alexlogan.co.uk/user/b0960c68-af68-4e5b-8447-1150878998c1/');
         const tokenData = JSON.parse(response.data.tokens);
 
+        // Use automatically-refreshed tokens for the connection
         const twitchClient = TwitchClient.withCredentials(clientId, tokenData.twitch.chat.accessToken, undefined, {
             clientSecret,
             refreshToken: tokenData.twitch.chat.refreshToken,
@@ -91,20 +94,30 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
                 await axios.put('https://tungsten.alexlogan.co.uk/user/b0960c68-af68-4e5b-8447-1150878998c1/', {'tokens': JSON.stringify(tokenData)});
             }
         });
+
+        // Get channel name
+        let user: string = '';
+        response = await axios.get('https://api.twitch.tv/helix/users', { headers: {"Authorization" : `Bearer ${tokenData.twitch.authentication}`}});
+        if (response.data.data) {
+            user = response.data.data[0].login;
+        }
     
-        const chatClient = await ChatClient.forTwitchClient(twitchClient, {channels: ['palexbrotoc']});
+        const chatClient = await ChatClient.forTwitchClient(twitchClient, {channels: [user]});
         await chatClient.connect();
     
+        // Subscribe to the new message event
         chatClient.onPrivmsg((channel, user, message) => {
             const newChat: Chat[] = chat;
-            if (newChat.length === 0 || (newChat.length > 0 && !_.isEqual(newChat[newChat.length - 1], {user: user, message: message}))) {
-                newChat.push({user: user, message: message});
+            const time: string = `${moment().hour()}:${moment().minute()}`;
+            if (newChat.length === 0 || (newChat.length > 0 && !_.isEqual(newChat[newChat.length - 1], {time: time, user: user, message: message}))) {
+                newChat.push({time: time, user: user, message: message});
                 setChat([...newChat]);
             }
         });
     })();
 
     const fetchStreamData = (stream: string) => {
+        // Get stream related information
         axios.get(`https://api.twitch.tv/helix/streams?user_login=${stream}`, {headers: {'Client-ID': '0qmxdyuchkdcpkfktmq2t47z06eng1'}}).then(response => {
             const data = response.data.data[0];
 
@@ -129,6 +142,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
     };
 
     React.useEffect(() => {
+        // Get the OAuth token of the logged in account
         axios.get('https://tungsten.alexlogan.co.uk/user/b0960c68-af68-4e5b-8447-1150878998c1/').then(response => {
             const tokenData = JSON.parse(response.data.tokens);
 
@@ -136,6 +150,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
                 if (response.data.data) {
                     const stream: string = response.data.data[0].login;
 
+                    // Update statistics every minute
                     fetchStreamData(stream);    
                     const interval = setInterval(() => {
                         fetchStreamData(stream);
@@ -181,7 +196,7 @@ export const Dashboard: React.FunctionComponent<{}> = () => {
                             {chat.reverse().map((el, idx) => (
                                 <div key={idx} className={classes.message}>
                                     <Typography className={classes.user}>
-                                    {el.user}:
+                                    [{el.time}] {el.user}:
                                     </Typography>
                                     <Typography>
                                         {el.message}

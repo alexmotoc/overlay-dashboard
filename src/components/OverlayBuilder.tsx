@@ -101,6 +101,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
 
     React.useEffect(() => {
         const loadTemplate = async () => {
+            // Use id only if it is part of the URL
             if (id) {
                 const result = await axios(
                     `https://tungsten.alexlogan.co.uk/overlays/${id}`,
@@ -138,6 +139,7 @@ export const OverlayBuilder: React.FunctionComponent<{}> = () => {
     };
 
     const handleSaveOverlay = () => {
+        // Handle saving process with different requests based on whether it's a new or existing template
         if (id) {
             axios.put(`https://tungsten.alexlogan.co.uk/overlays/${id}/`, {'name': templateName, 'overlays': JSON.stringify(overlays)}).then(response => {
                 setIsToastOpen(true);
